@@ -1,0 +1,148 @@
+<!DOCTYPE html>
+<html lang="ru">
+    <head>
+        <meta charset="UTF-8">
+        <title>Задание 3</title>
+        <style>
+.chat{
+  margin: 10px;
+  width: 600px;
+  height: 600px;
+  border: 3px solid lightblue
+}
+.head{
+  margin: 10px;
+  
+}
+.btn{
+  width: 100px;
+  height: 40px;
+  display: inline;
+  background-color: aqua;
+  border: none;
+  font-size: 12px;
+  line-height: 15px;
+  text-transform: uppercase;
+  color: white;
+  background: lightblue;
+}
+.Geo-loc{
+  width: 100px;
+  height: 40px;
+  display: inline;
+  background-color: aqua;
+  border: none;
+  font-size: 12px;
+  line-height: 15px;
+  text-transform: uppercase;
+  color: white;
+  background: lightblue;
+}
+.btn-text{
+    justify-content: center;
+ }
+ 
+ #input{
+   width: 350px;
+   height: 35px;
+   border: 3px solid lightblue;
+ }
+  .user-massege {
+	display: flex;
+	flex-flow: column wrap;
+ 
+ }
+  .message{
+  background-color: lightblue;
+	color: white;
+	border-radius: 10px;
+	padding: 10px;
+	margin-bottom: 7px;
+	align-self: flex-end;
+  margin-right: 10px;
+} 
+            
+        </style>
+    </head>
+    <body>
+        <div class="div">
+            <div class="head">
+            <label>
+              <input id="input" type="text" onclick="textInput">
+            </label>
+            
+            <button type="button" class="btn">
+              <p class="btn-text">Отправить</p>
+            </button>
+            
+            <button type="button" class="Geo-loc">
+                <p class="btn-text">Геолокация</p>
+              </button>
+            </div>
+            <div class="chat">
+              <div class="user-massege"></div>
+            </div>
+        </div>
+    </body>
+    <script>
+        const url = "wss://echo-ws-service.herokuapp.com";
+let websocket;
+const input = document.querySelector("#input");
+const chat = document.querySelector(".chat");
+const usermassege = document.querySelector(".user-massege"); 
+const btn = document.querySelector(".btn");
+const geo = document.querySelector(".Geo-loc");
+
+// выводит сообщения
+function writeToScreen(message){
+  let pre = document.createElement('p');
+  pre.classList.add("message");
+  pre.style.wordWrap = ' ';
+  pre.innerHTML = message;
+  usermassege.appendChild(pre);
+}
+
+//объект соединения
+websocket = new WebSocket(url);
+websocket.onopen = function (evt) {
+  console.log("CONNECTED");
+};
+websocket.onclose = function (evt) {
+  console.log("DISCONNECTED");
+};
+websocket.onmessage = function (evt) {
+  writeToScreen(evt.data )};
+
+//отправка сообщения
+
+btn.addEventListener("click", ()=>{
+  
+  let message = input.value;
+  websocket.send(message);
+  writeToScreen(message);
+  input.value = '';
+
+})
+
+ // Функция,  об ошибке
+ const error = ()=>{
+  writeToScreen("Невозможно определить местоположение")
+}
+ // Функция, срабатывающая при успешном получении геолокации
+ const success = (position)=>{
+   const latitude = position.coords.latitude;
+   const longitude = position.coords.longitude;
+   const geoloc = `https://www.openstreetmap.org/${latitude}${longitude}`;
+   writeToScreen(`<a  href='${geoloc}' target='_blank'>Ваше местоположение</a>`);
+
+ }
+ geo.addEventListener("click", ()=>{
+   if (!navigator.geolocation) {
+     console.log('Geolocation не поддерживается вашим браузером');
+   } else {
+     navigator.geolocation.getCurrentPosition(success, error);
+   }
+ })
+
+    </script>
+</html>

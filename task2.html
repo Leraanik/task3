@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html lang="ru">
+    <head>
+        <meta charset="UTF-8">
+        <title>Задание 2</title>
+        <style>
+            .btn{
+                background-color: aqua;
+                border: none;
+
+                display: flex;
+                margin: 5px 10px;
+                padding: 10px 15px;
+                border-radius: 10px;
+                font-size: 12px;
+                line-height: 15px;
+                text-transform: uppercase;
+                color: white;
+                background: #315efb;
+
+            }
+            .btn-text{
+                margin-right: 10px;
+            }
+            
+        </style>
+    </head>
+    <body>
+        <button class="btn" type="button">узнать размеры окна</button>
+    </body>
+    <script>
+        const btn = document.querySelector(".btn");
+
+        btn.addEventListener("click", ()=>{
+        alert(`Высота экрана: ${window.screen.height} px\nШирина экрана: ${window.screen.width} px`);
+        })
+    </script>
+</html>
